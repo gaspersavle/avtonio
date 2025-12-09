@@ -1,0 +1,14 @@
+<launch>
+  <node name="agv" pkg="amsagv" type="agv.py">
+    <param name="odom_frame_id" value="$(env ROS_NAMESPACE)/odom" />
+    <param name="agv_frame_id" value="$(env ROS_NAMESPACE)/agv" />
+  </node>
+
+  <node name="tag_reader" pkg="amsagv" type="tag_reader.py">
+  </node>
+  
+  <!--
+  <node name="path_planning" pkg="amsagv" type="path_planning.py">
+  </node>
+  -->
+</launch>

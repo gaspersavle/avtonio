@@ -1,0 +1,8 @@
+<launch>
+  <node name="front0" pkg="amsagv" type="front.py" ns="/anthony" />
+  <node name="front1" pkg="amsagv" type="front.py" ns="/goran" />
+  <node name="front2" pkg="amsagv" type="front.py" ns="/jaka" />
+  <node name="front3" pkg="amsagv" type="front.py" ns="/klemen" />
+  <node name="front4" pkg="amsagv" type="front.py" ns="/luka" />
+  <node name="front5" pkg="amsagv" type="front.py" ns="/matic" />
+</launch>

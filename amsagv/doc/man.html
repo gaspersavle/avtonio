@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+html, body {
+  background:#EEE;
+  font-size:11pt;
+  outline:0;
+}
+:focus {
+  outline:0;
+}
+div,
+details,
+summary {
+  margin:0; padding:0;
+}
+summary {
+  cursor:pointer;
+  font-size:12pt;
+  padding:5pt;
+  margin-top:10pt;
+  font-weight:bold;
+  color:#AAA;
+}
+var {
+  font-family:monospace;
+  font-style:normal;
+  color:#000;
+}
+details dl,
+details div,
+div.package {
+  background:#FFF;
+  margin:0; padding:5pt;
+}
+.summary {
+  margin:0 0 5pt 0; padding:5pt;
+  font-size:12pt;
+  font-style:italic;
+}
+h1 {
+  margin:0; padding:5pt;
+  font-weight:bold;
+  font-size:24pt;
+  color:#AAA;
+  /*border-bottom:1pt dashed #000;*/
+}
+h2 {
+  /*border-top:1pt dashed #000;*/
+  margin:30pt 0 5pt 0; padding:5pt;
+  font-weight:bold;
+  font-size:16pt;
+  color:#AAA;
+}
+dt {
+ font-family:monospace;
+ font-size:11pt;
+ font-weight:bold;
+ margin:5pt 0 2pt 0; padding:0;
+}
+dt span {
+  font-weight:normal;
+  margin:0; padding: 0;
+}
+pre {
+ background:#F9F9F9;
+ margin:0; padding:2pt;  
+}
+code {
+  font-family:monospace;
+  font-size:11pt;
+  color:#909;
+}
+.cmd {
+ font-family:monospace;
+ font-size:11pt;
+ color:#000;
+ font-weight:bold;
+ background:#FFF;
+ margin:0; padding:5pt;
+}
+.cmd::before {
+  content: "$ ";
+  color:#000;
+}
+.ros::after {
+  content: " _PARAM:=VALUE OLD_TOPIC:=NEW_TOPIC";
+  color:#AAA;
+  font-weight:normal;
+}
+sup::after {
+  font-size:7pt;
+  margin-left:2pt;
+  padding:2pt;
+  color:#FFF!important;
+  font-weight:bold!important;
+}
+sup.ros::after {
+  content: "ROS node";
+  background:#361;
+}
+sup.cpp::after {
+  content: "C++";
+  background:#6A3;
+}
+sup.py::after {
+  content: "Python";
+  background:#AA3;
+}
+img {
+  width:90%;
+  max-width:800px;
+  margin:2px 5%;
+}
+</style>
+</head>
+<body>
+<h1>Package <var>amsagv</var></h1><div class="package">
+<p>Autonomous Mobile Systems (AMS) Automated Guided Vehicle (AGV)</p>
+
+<h3>AGV</h3>
+<p>Use SSH to connect to the AGV:</p>
+<pre><code class="lang-bash">ssh pi@192.168.000.000 #EDIT the IP address and user name!
+</code></pre>
+<p>You can use private/public keys to make the SSH authorization:</p>
+<pre><code class="lang-bash">ssh-keygen
+ssh-copy-id pi@192.168.000.000 #EDIT the IP address and user name!
+</code></pre>
+
+<h3>Installation</h3>
+<p>Edit the ROS setup file (<code>~/ros/setup.bash</code>):</p>
+<pre><code class="lang-bash">#!/bin/bash
+source &quot;/opt/ros/noetic/setup.bash&quot;
+[ -f &quot;${HOME}/ros/work/devel/setup.bash&quot; ] &amp;&amp; source &quot;${HOME}/ros/work/devel/setup.bash&quot;
+
+export ROS_MASTER_URI=&quot;http://127.0.0.1:11311&quot; #EDIT IP address of the master!
+export ROS_IP=&quot;127.0.0.1&quot; #EDIT IP address of the local machine!
+export ROS_NAMESPACE=&quot;&quot; #EDIT the namespace!
+
+export ROS_WORKSPACE=&quot;${HOME}/ros/work&quot;
+export EDITOR=&quot;nano&quot;
+
+echo &quot;ROS MASTER=${ROS_MASTER_URI} IP=${ROS_IP} NS=${ROS_NAMESPACE}&quot;
+</code></pre>
+<p>Make sure that the file <code>~/.bashrc</code> contains the following lines:</p>
+<pre><code class="lang-bash">alias ROS=&#39;source ~/ros/setup.bash&#39;
+ROS
+</code></pre>
+<p>Reload the BASH environment (e.g. <code>source ~/.bashrc</code> or close all open BASH sessions).</p>
+<p>Create a ROS workspace if it does not exist yet:</p>
+<pre><code class="lang-bash">mkdir -p ~/ros/work/src
+cd ~/ros/work
+catkin_init_workspace src
+catkin_make
+</code></pre>
+<p>Reload the BASH environment again.</p>
+<p>Copy <code>amsagv</code> package to the AGV (into the folder <code>~/ros/work/src</code>).</p>
+
+</div>
+<h2><var>agv.py</var><sup class="ros"></sup><sup class="py"></sup></h2>
+<pre class="cmd ros">rosrun amsagv agv.py</pre>
+<details class="params">
+<summary>Parameters (2)</summary>
+<dl>
+  <dt>~agv_frame_id</dt><dd>Name of the AGV frame</dd>
+  <dt>~odom_frame_id</dt><dd>Name of the odometry frame</dd>
+</dl>
+</details>
+<details class="subs">
+<summary>Subscribers (1)</summary>
+<dl>
+  <dt>cmd_vel <span>[geometry_msgs/Twist]</span></dt><dd>Velocity commands subscriber.</dd>
+</dl>
+</details>
+<details class="pubs">
+<summary>Publishers (2)</summary>
+<dl>
+  <dt>line <span>[amsagv_msgs/LineStamped]</span></dt><dd>Line sensor publisher</dd>
+  <dt>odom <span>[nav_msgs/Odometry]</span></dt><dd>Odometry publisher</dd>
+</dl>
+</details>
+<h2><var>agvapi.py</var><sup class="py"></sup></h2>
+<p class="summary">Interface for serial communication with the AGV driver</p><pre class="cmd">rosrun amsagv agvapi.py</pre>
+<details open>
+<summary>Description</summary>
+<div>
+<p>It contains a simple test program that sets constant motor velocities and outputs sensor readings.</p>
+
+</div>
+</details>
+<h2><var>control_line.py</var><sup class="ros"></sup><sup class="py"></sup></h2>
+<pre class="cmd ros">rosrun amsagv control_line.py</pre>
+<details class="subs">
+<summary>Subscribers (2)</summary>
+<dl>
+  <dt>line <span>[amsagv_msgs/LineStamped]</span></dt><dd>Line sensor subscriber</dd>
+  <dt>tag <span>[amsagv_msgs/TagStamped]</span></dt><dd>Tag subscriber</dd>
+</dl>
+</details>
+<details class="pubs">
+<summary>Publishers (1)</summary>
+<dl>
+  <dt>cmd_vel <span>[geometry_msgs/Twist]</span></dt><dd>Velocity commands publisher.</dd>
+</dl>
+</details>
+<h2><var>control_point.py</var><sup class="ros"></sup><sup class="py"></sup></h2>
+<pre class="cmd ros">rosrun amsagv control_point.py</pre>
+<details class="pubs">
+<summary>Publishers (1)</summary>
+<dl>
+  <dt>cmd_vel <span>[geometry_msgs/Twist]</span></dt><dd>Velocity commands publisher.</dd>
+</dl>
+</details>
+<h2><var>control_point_odom.py</var><sup class="ros"></sup><sup class="py"></sup></h2>
+<pre class="cmd ros">rosrun amsagv control_point_odom.py</pre>
+<details class="subs">
+<summary>Subscribers (1)</summary>
+<dl>
+  <dt>odom <span>[nav_msgs/Odometry]</span></dt><dd>Odometry subscriber</dd>
+</dl>
+</details>
+<details class="pubs">
+<summary>Publishers (1)</summary>
+<dl>
+  <dt>cmd_vel <span>[geometry_msgs/Twist]</span></dt><dd>Velocity commands publisher.</dd>
+</dl>
+</details>
+<h2><var>display.py</var><sup class="ros"></sup><sup class="py"></sup></h2>
+<p class="summary">Display of the ground area</p><pre class="cmd ros">rosrun amsagv display.py</pre>
+<details class="params">
+<summary>Parameters (2)</summary>
+<dl>
+  <dt>~robot_frame_id <span>= "robot"</span></dt><dd>Name of the robot frame</dd>
+  <dt>~world_frame_id <span>= "world"</span></dt><dd>Name of the world frame</dd>
+</dl>
+</details>
+<details class="subs">
+<summary>Subscribers (2)</summary>
+<dl>
+  <dt>goal <span>[geometry_msgs/PoseStamped]</span></dt><dd>Subscriber to the goal pose.</dd>
+  <dt>path_tags <span>[amsagv_msgs/TagsStamped]</span></dt><dd>Subscriber to the path, which is given as a list of comma separated tag IDs.</dd>
+</dl>
+</details>
+<details class="pubs">
+<summary>Publishers (2)</summary>
+<dl>
+  <dt>path <span>[nav_msgs/Path]</span></dt><dd>Publisher of the path.</dd>
+  <dt>start_goal_tag <span>[amsagv_msgs/TagsStamped]</span></dt><dd>Publisher of the start and goal tag ID (the two values are separated by a comma). The message is published when a new goal is set and the start node is known.</dd>
+</dl>
+</details>
+<details open>
+<summary>Description</summary>
+<div>
+<p>This program provides a simple user interface for visualization of the ground area.</p>
+<p>Use left mouse click to define the goal tag. When a new goal is defined and the start tag is known, a message with the start and goal tag ID are published on the topic <strong>start_goal_tag</strong>. The start tag is defined based on the current pose of the robot frame with respect to the world frame. You can use right mouse click to manually define the start tag. Alternatively, the goal pose can also be set throught the topic <strong>goal</strong>.</p>
+<p>When a new message on the topic <strong>path_tags</strong> is received, which contains a list of comma separated tags that represent the path, the path is drawn in the graph and a message with the path points is published on the topic <strong>path</strong>.</p>
+<p><img src="img/graph-tags.png" alt="graph-tags" title="Graph."></p>
+
+</div>
+</details>
+<h2><var>front.py</var><sup class="ros"></sup><sup class="py"></sup></h2>
+<pre class="cmd ros">rosrun amsagv front.py</pre>
+<details class="subs">
+<summary>Subscribers (1)</summary>
+<dl>
+  <dt>line <span>[amsagv_msgs/LineStamped]</span></dt><dd>Odometry subscriber</dd>
+</dl>
+</details>
+<h2><var>graph.py</var><sup class="py"></sup></h2>
+<pre class="cmd">rosrun amsagv graph.py</pre>
+<h2><var>laser_sim</var><sup class="ros"></sup><sup class="cpp"></sup></h2>
+<p class="summary">Laser scanner simulator</p><pre class="cmd ros">rosrun amsagv laser_sim</pre>
+<details class="params">
+<summary>Parameters (11)</summary>
+<dl>
+  <dt>~boundary_shape <span>= "0.0 0.0 2.2 0.0 2.2 1.8 0.0 1.8 0.0 0.0"</span></dt><dd>A space-separated list of connected points that describe the shape of the boundary. Each point is represented as a pair of x and y value.</dd>
+  <dt>~fov <span>= 180</span></dt><dd>Laser scanner field of view (FOV), in degrees.</dd>
+  <dt>~frame_age <span>= 1.0</span></dt><dd>Maximum frame age, in seconds.</dd>
+  <dt>~frame_off <span>= 0.0</span></dt><dd>Maximum frame time offset, in seconds.</dd>
+  <dt>~laser_frame_id <span>= "laser"</span></dt><dd>Name of the laser frame, in which the laser measurements are simulated.</dd>
+  <dt>~range_max <span>= 1.5</span></dt><dd>Maximum laser ray range.</dd>
+  <dt>~range_min <span>= 0.0</span></dt><dd>Minimum laser ray range.</dd>
+  <dt>~ray_count <span>= 180</span></dt><dd>Number of laser rays.</dd>
+  <dt>~robot_frame_ids <span>= ""</span></dt><dd>A space-separated list of robot frame names.</dd>
+  <dt>~robot_shape <span>= "-0.023 -0.048 0.170 -0.048 0.170 0.048 -0.023 0.048 -0.023 -0.048"</span></dt><dd>A space-separated list of connected points that describe the shape of the robot. Each point is represented as a pair of x and y value.</dd>
+  <dt>~world_frame_id <span>= "world"</span></dt><dd>Name of the world frame. All poses of the object are supposed to be available with respect to this world frame.</dd>
+</dl>
+</details>
+<details class="pubs">
+<summary>Publishers (1)</summary>
+<dl>
+  <dt>laser <span>[sensor_msgs/LaserScan]</span></dt><dd>Laser scan publisher.</dd>
+</dl>
+</details>
+<details open>
+<summary>Description</summary>
+<div>
+<p>This is a simple simulator of a laser scanner.</p>
+
+<h3>Usage</h3>
+<p>Define all the static transformations.</p>
+<pre><code>roslaunch amsagv global.launch
+</code></pre>
+<p>Add <code>static:=true</code> for static definition of the robots.</p>
+<p>Start laser simulator.</p>
+<pre><code>rosrun amsagv laser_sim _laser_frame_id:="laser1" _robot_frame_ids:="base0 base2 base3 base4 base5" _fov:=180 _ray_count:=180
+</code></pre>
+<p>Open visualization in RViz.</p>
+<pre><code>roslaunch amsagv rviz.launch
+</code></pre>
+<p><img src="img/laser_sim_rviz_tf.png" alt="laser_sim_rviz_tf" title="Visualization of laser scans in RViz."></p>
+
+</div>
+</details>
+<h2><var>localisation.py</var><sup class="ros"></sup><sup class="py"></sup></h2>
+<pre class="cmd ros">rosrun amsagv localisation.py</pre>
+<details class="subs">
+<summary>Subscribers (2)</summary>
+<dl>
+  <dt>odom <span>[nav_msgs/Odometry]</span></dt><dd>Odometry subscriber</dd>
+  <dt>tag <span>[amsagv_msgs/TagStamped]</span></dt><dd>Tag subscriber</dd>
+</dl>
+</details>
+<h2><var>path_converter.py</var><sup class="ros"></sup><sup class="py"></sup></h2>
+<pre class="cmd ros">rosrun amsagv path_converter.py</pre>
+<details class="params">
+<summary>Parameters (1)</summary>
+<dl>
+  <dt>~world_frame_id <span>= "world"</span></dt><dd>Name of the world frame</dd>
+</dl>
+</details>
+<details class="subs">
+<summary>Subscribers (1)</summary>
+<dl>
+  <dt>path_tags <span>[amsagv_msgs/TagsStamped]</span></dt><dd>Subscriber to the path, which is given as a list of tag IDs</dd>
+</dl>
+</details>
+<details class="pubs">
+<summary>Publishers (1)</summary>
+<dl>
+  <dt>path <span>[nav_msgs/Path]</span></dt><dd>Publisher of the path</dd>
+</dl>
+</details>
+<h2><var>path_planning.py</var><sup class="ros"></sup><sup class="py"></sup></h2>
+<pre class="cmd ros">rosrun amsagv path_planning.py</pre>
+<details class="subs">
+<summary>Subscribers (1)</summary>
+<dl>
+  <dt>start_goal_tag <span>[amsagv_msgs/TagsStamped]</span></dt><dd>Subscriber to the start and goal tag ID</dd>
+</dl>
+</details>
+<details class="pubs">
+<summary>Publishers (2)</summary>
+<dl>
+  <dt>path_actions <span>[amsagv_msgs/ActionsStamped]</span></dt><dd>Publisher of the actions</dd>
+  <dt>path_tags <span>[amsagv_msgs/TagsStamped]</span></dt><dd>Publisher of the path, which is given as a list of tag IDs</dd>
+</dl>
+</details>
+<h2><var>PathPlanning.py</var><sup class="py"></sup></h2>
+<pre class="cmd">rosrun amsagv PathPlanning.py</pre>
+<h2><var>set_odom_frame.py</var><sup class="ros"></sup><sup class="py"></sup></h2>
+<pre class="cmd ros">rosrun amsagv set_odom_frame.py</pre>
+<details class="subs">
+<summary>Subscribers (1)</summary>
+<dl>
+  <dt>initial_pose <span>[geometry_msgs/PoseWithCovarianceStamped]</span></dt><dd>Initial pose subscriber</dd>
+</dl>
+</details>
+<h2><var>tag_beep.py</var><sup class="ros"></sup><sup class="py"></sup></h2>
+<pre class="cmd ros">rosrun amsagv tag_beep.py</pre>
+<details class="subs">
+<summary>Subscribers (1)</summary>
+<dl>
+  <dt>tag <span>[amsagv_msgs/TagStamped]</span></dt><dd>Tag subscriber</dd>
+</dl>
+</details>
+<h2><var>tag_converter.py</var><sup class="ros"></sup><sup class="py"></sup></h2>
+<pre class="cmd ros">rosrun amsagv tag_converter.py</pre>
+<details class="params">
+<summary>Parameters (2)</summary>
+<dl>
+  <dt>~robot_frame_id <span>= "robot"</span></dt><dd>Name of the robot frame</dd>
+  <dt>~world_frame_id <span>= "world"</span></dt><dd>Name of the world frame</dd>
+</dl>
+</details>
+<details class="subs">
+<summary>Subscribers (3)</summary>
+<dl>
+  <dt>goal <span>[geometry_msgs/PoseStamped]</span></dt><dd>Subscriber to the goal pose.</dd>
+  <dt>goal_tag <span>[std_msgs/String]</span></dt><dd>Subscriber to the goal tag.</dd>
+  <dt>path_tags <span>[std_msgs/String]</span></dt><dd>Subscriber to the path, which is given as a list of comma separated tag IDs.</dd>
+</dl>
+</details>
+<details class="pubs">
+<summary>Publishers (2)</summary>
+<dl>
+  <dt>path <span>[nav_msgs/Path]</span></dt><dd>Publisher of the path.</dd>
+  <dt>start_goal_tag <span>[std_msgs/String]</span></dt><dd>Publisher of the start and goal tag ID (the two values are separated by a comma). The message is published when a new goal is set and the start node is known.</dd>
+</dl>
+</details>
+<h2><var>tag_reader.py</var><sup class="ros"></sup><sup class="py"></sup></h2>
+<p class="summary">NFC-tag reader</p><pre class="cmd ros">rosrun amsagv tag_reader.py</pre>
+<details class="pubs">
+<summary>Publishers (1)</summary>
+<dl>
+  <dt>tag <span>[amsagv_msgs/TagStamped]</span></dt><dd>Tag publisher</dd>
+</dl>
+</details>
+<details open>
+<summary>Description</summary>
+<div>
+<p>This program publishes a ROS message with the ID of the tag whenever a new tag is detected with MFRC-522 module that is attached to the Raspberry Pi.</p>
+
+<h3>Installation</h3>
+<p>This program requires an enabled SPI interface on the Raspberry Pi and Python libraries for that interface.</p>
+<pre><code class="lang-bash">#Use sudo raspi-config to enable SPI interface or:
+sudo sed -i &#39;/^[# ]*dtparam=spi=.*/d&#39; /boot/config.txt
+echo &#39;dtparam=spi=on&#39; | sudo tee -a /boot/config.txt
+
+sudo apt-get update
+sudo apt-get upgrade
+
+sudo apt-get install python3-dev python3-pip
+sudo pip3 install RPi.GPIO
+
+cd
+git clone https://github.com/lthiery/SPI-Py.git
+
+cd ~/SPI-Py
+sudo python3 setup.py install
+
+#cd
+#git clone https://github.com/pimylifeup/MFRC522-python.git
+#git clone https://github.com/naleefer/MFRC522-python.git
+</code></pre>
+
+<h3>Subscribing to the tag topic</h3>
+<p>To subscribe to the tag topic, add the following lines to your program.</p>
+<p>Add the following line to the import section:</p>
+<pre><code class="lang-python">from amsagv_msgs.msg import TagStamped
+</code></pre>
+<p>Add the following line to the <code>__init__</code> method of your class:</p>
+<pre><code class="lang-python">self._subTag = rospy.Subscriber(&#39;tag&#39;, TagStamped, self._handleTag)
+</code></pre>
+<p>Add the following method to your class:</p>
+<pre><code class="lang-python">def _handleTag(self, msg):
+  print(&#39;Tag data: {}&#39;.format(msg.tag.id))
+</code></pre>
+
+</div>
+</details>
+<h2><var>tags_converters.py</var><sup class="ros"></sup><sup class="py"></sup></h2>
+<pre class="cmd ros">rosrun amsagv tags_converters.py</pre>
+<details class="params">
+<summary>Parameters (3)</summary>
+<dl>
+  <dt>~robot_frame_ids <span>= "robot').split(' "</span></dt><dd>Names of the robot frames</dd>
+  <dt>~robot_names <span>= "robot').split(' "</span></dt><dd>Names of the robot</dd>
+  <dt>~world_frame_id <span>= "world"</span></dt><dd>Name of the world frame</dd>
+</dl>
+</details>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!-- xacro - -inorder size:=5 world.urdf.xacro -->
+<robot name="world" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:arg name="size" default="6" />
+  
+  <link name="world">
+    <visual>
+      <geometry>
+        <mesh filename="package://amsagv/meshes/ground.dae" />
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </visual>
+  </link>
+  
+  <xacro:macro name="agv" params="id">
+    <link name="${id}">
+      <visual>
+        <geometry>
+          <mesh filename="package://amsagv/meshes/${id}.dae" />
+        </geometry>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+      </visual>
+    </link>
+  
+    <joint name="world_${id}" type="fixed">
+      <parent link="world" />
+      <child link="${id}" />
+      <origin xyz="0 0 -1" rpy="0 0 0" />
+    </joint>
+  </xacro:macro>
+  
+  <xacro:macro name="agv_loop" params="n">
+    <xacro:if value="${n}">
+      <xacro:agv_loop n="${n-1}" />
+      <xacro:agv id="agv${n-1}" />
+    </xacro:if>
+  </xacro:macro>
+  <xacro:agv_loop n="$(arg size)" />
+</robot>

@@ -1,0 +1,11 @@
+<launch>
+  <arg name="rvizconfig" default="$(find amsagv)/rviz/world.rviz" />
+  <arg name="show" default="true" />
+  <arg name="model" default="$(find amsagv)/urdf/world.urdf.xacro" />
+ 
+  <param name="world_model" command="$(find xacro)/xacro --inorder $(arg model)" />
+
+  <group if="$(arg show)">
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" />
+  </group>
+</launch>

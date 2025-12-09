@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+html, body {
+  background:#EEE;
+  font-size:11pt;
+  outline:0;
+}
+:focus {
+  outline:0;
+}
+div,
+details,
+summary {
+  margin:0; padding:0;
+}
+summary {
+  cursor:pointer;
+  font-size:12pt;
+  padding:5pt;
+  margin-top:10pt;
+  font-weight:bold;
+  color:#AAA;
+}
+var {
+  font-family:monospace;
+  font-style:normal;
+  color:#000;
+}
+details dl,
+details div,
+div.package {
+  background:#FFF;
+  margin:0; padding:5pt;
+}
+.summary {
+  margin:0 0 5pt 0; padding:5pt;
+  font-size:12pt;
+  font-style:italic;
+}
+h1 {
+  margin:0; padding:5pt;
+  font-weight:bold;
+  font-size:24pt;
+  color:#AAA;
+  /*border-bottom:1pt dashed #000;*/
+}
+h2 {
+  /*border-top:1pt dashed #000;*/
+  margin:30pt 0 5pt 0; padding:5pt;
+  font-weight:bold;
+  font-size:16pt;
+  color:#AAA;
+}
+dt {
+ font-family:monospace;
+ font-size:11pt;
+ font-weight:bold;
+ margin:5pt 0 2pt 0; padding:0;
+}
+dt span {
+  font-weight:normal;
+  margin:0; padding: 0;
+}
+pre {
+ background:#F9F9F9;
+ margin:0; padding:2pt;  
+}
+code {
+  font-family:monospace;
+  font-size:11pt;
+  color:#909;
+}
+.cmd {
+ font-family:monospace;
+ font-size:11pt;
+ color:#000;
+ font-weight:bold;
+ background:#FFF;
+ margin:0; padding:5pt;
+}
+.cmd::before {
+  content: "$ ";
+  color:#000;
+}
+.ros::after {
+  content: " _PARAM:=VALUE OLD_TOPIC:=NEW_TOPIC";
+  color:#AAA;
+  font-weight:normal;
+}
+sup::after {
+  font-size:7pt;
+  margin-left:2pt;
+  padding:2pt;
+  color:#FFF!important;
+  font-weight:bold!important;
+}
+sup.ros::after {
+  content: "ROS node";
+  background:#361;
+}
+sup.cpp::after {
+  content: "C++";
+  background:#6A3;
+}
+sup.py::after {
+  content: "Python";
+  background:#AA3;
+}
+img {
+  width:90%;
+  max-width:800px;
+  margin:2px 5%;
+}
+</style>
+</head>
+<body>
+<h1>Package <var>amsagv_msgs</var></h1></body>
+</html>
